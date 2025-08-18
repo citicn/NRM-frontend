@@ -27,7 +27,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void _loadUserData() async {
     setState(() => _loading = true);
-    final profile = await UserService.fetchCurrentProfile();
+    final profile = await UserService.getCurrentUser();
     if (profile != null) {
       _bioController.text = profile['bio'] ?? '';
       setState(() {

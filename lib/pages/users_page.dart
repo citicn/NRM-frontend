@@ -12,13 +12,13 @@ class UsersPage extends StatefulWidget {
 }
 
 class _UsersPageState extends State<UsersPage> {
-  late Future<List<Map<String, dynamic>>> usersFuture;
+  late Future<List<Map<String, dynamic>>> _usersFuture;
   String? _cUserId;
 
   @override
   void initState() {
     super.initState();
-    usersFuture = UserService.getUsers();
+    _usersFuture = UserService.getUsers();
     UserService.getCurrentId().then((id) {
       setState(() {
         _cUserId = id;
@@ -31,7 +31,7 @@ class _UsersPageState extends State<UsersPage> {
     return Scaffold(
       appBar: AppBar(title: Text('Korisnici')),
       body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: usersFuture,
+        future: _usersFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());

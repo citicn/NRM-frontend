@@ -124,5 +124,56 @@ class ConversationService {
     }
   }
 
+ //dodaj nove clanove u grupu
+  static Future<bool> addMembers(String conversationId, List<String> userIds) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    final url = Uri.parse('$bUrl/conversations/$conversationId/add_members');
+    final response = await http.put(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({'members_id': userIds}),
+    );
+
+    return response.statusCode == 200;
+  }
+
+  //brisi clanove iz grupe
+  static Future<bool> removeMembers(String conversationId, List<String> usersId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    final url = Uri.parse('$bUrl/conversations/$conversationId/remove_members');
+    final response = await http.put(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({'members_id': usersId}),
+    );
+
+    return response.statusCode == 200;
+  }
+  //brisanje grupe
+  static Future<bool> deleteGroup(String conversationId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    final url = Uri.parse('$bUrl/conversations/$conversationId');
+    final resp = await http.delete(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    return resp.statusCode == 200;
+  }
 
 }

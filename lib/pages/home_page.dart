@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../services/auth_service.dart';
 import '../services/conversation_service.dart';
 import 'chat_page.dart';
-import 'create_group.dart';
+import 'create_group_page.dart';
 import 'login_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,7 +18,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late Future<List<Map<String, dynamic>>> conversationsFuture;
+  late Future<List<Map<String, dynamic>>> _conversationsFuture;
   String? _cUserId;
 
   @override
@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
 
   //Ucitavanje
   void _getAllConv() {
-    conversationsFuture = ConversationService.getAllConv();
+    _conversationsFuture = ConversationService.getAllConv();
   }
 
   //Osvezi prepiske
@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _getAllConv();
     });
-    await conversationsFuture;
+    await _conversationsFuture;
   }
 
   @override
@@ -98,7 +98,7 @@ class _HomePageState extends State<HomePage> {
       body: RefreshIndicator(
         onRefresh: _refreshConversations,
         child: FutureBuilder<List<Map<String, dynamic>>>(
-          future: conversationsFuture,
+          future: _conversationsFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting || _cUserId == null) {
               return Center(child: CircularProgressIndicator());

@@ -15,7 +15,7 @@ class UserProfilePage extends StatefulWidget {
 }
 
 class _UserProfilePageState extends State<UserProfilePage> {
-  Map<String, dynamic>? userData;
+  Map<String, dynamic>? _userData;
   bool _loading = true;
   bool _openingChat = false;
 
@@ -26,17 +26,17 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
 
   void _getUser() async {
-    final user = await UserService.fetchOtherProfile(widget.userId);
+    final user = await UserService.getUser(widget.userId);
     setState(() {
-      userData = user;
+      _userData = user;
       _loading = false;
     });
   }
 
   Future<void> _openChat() async {
-    if (userData == null) return;
+    if (_userData == null) return;
     setState(() => _openingChat = true);
-    final convId = await ConversationService.findCreateConv(userData!['id']);
+    final convId = await ConversationService.findCreateConv(_userData!['id']);
     setState(() => _openingChat = false);
     if (convId != null) {
       Navigator.push(
@@ -44,7 +44,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         MaterialPageRoute(
           builder: (context) => ChatPage(
             conversationId: convId,
-            otherUser: userData!['username'],
+            otherUser: _userData!['username'],
           ),
         ),
       );
@@ -64,7 +64,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         body: Center(child: CircularProgressIndicator()),
       );
     }
-    if (userData == null) {
+    if (_userData == null) {
       return Scaffold(
         appBar: AppBar(),
         body: Center(child: Text('Korisnik nije pronajden.')),
@@ -81,11 +81,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
               CircleAvatar(
                 radius: 150,
                 backgroundColor: Colors.grey[300],
-                backgroundImage: NetworkImage(getFullImageUrl(userData!['profile_picture']))
+                backgroundImage: NetworkImage(getFullImageUrl(_userData!['profile_picture']))
               ),
               SizedBox(height: 24),
               Text(
-                userData!['username'] ?? '',
+                _userData!['username'] ?? '',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
                 textAlign: TextAlign.center,
               ),
@@ -96,14 +96,14 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
                   Icon(
                     Icons.circle,
-                    color: getUserStatus(userData!['last_seen']) == "Online" ? Colors.green : Colors.red,
+                    color: getUserStatus(_userData!['last_seen']) == "Online" ? Colors.green : Colors.red,
                     size: 14,
                   ),
 
                   SizedBox(width: 8),
 
                   Text(
-                    "Status: ${getUserStatus(userData!['last_seen'])}",
+                    "Status: ${getUserStatus(_userData!['last_seen'])}",
                     style: TextStyle(fontSize: 17, color: Colors.blueGrey),
                     textAlign: TextAlign.center,
                   ),
@@ -113,7 +113,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
               SizedBox(height: 14),
 
               Text(
-                "Bio: ${userData!['bio'] ?? ''}",
+                "Bio: ${_userData!['bio'] ?? ''}",
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 15, color: Colors.black54),
               ),

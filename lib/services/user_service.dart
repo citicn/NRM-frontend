@@ -63,7 +63,7 @@ class UserService {
   }
 
   //ucitavanje profila trenutnog usera
-  static Future<Map<String, dynamic>?> fetchCurrentProfile() async {
+  static Future<Map<String, dynamic>?> getCurrentUser() async {
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getString('user_id');
     final token = prefs.getString('token');
@@ -83,7 +83,7 @@ class UserService {
   }
 
   //vracenje profila drugog usera
-  static Future<Map<String, dynamic>?> fetchOtherProfile(String userId) async {
+  static Future<Map<String, dynamic>?> getUser(String userId) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     final url = Uri.parse('$baseUrl/users/$userId');

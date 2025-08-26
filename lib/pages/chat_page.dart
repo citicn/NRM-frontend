@@ -216,10 +216,14 @@ class _ChatPageState extends State<ChatPage> {
                       String time = '';
                       if (createdAt != null && createdAt.isNotEmpty) {
                         try {
-                          final dateTime = DateTime.parse(createdAt);
-                          time = DateFormat('HH:mm').format(dateTime);
-                        } catch (_) {
-                          time = createdAt.toString().substring(11, 16);
+                          final dateTime = DateTime.parse(createdAt.toString());
+                          if (DateUtils.isSameDay(dateTime, DateTime.now())) {
+                             time = DateFormat('HH:mm').format(dateTime);
+                             } else {
+                             time = DateFormat('dd.MM HH:mm').format(dateTime);
+                             }}
+    catch (e) {
+                          time = createdAt.toString();
                         }
                       }
 

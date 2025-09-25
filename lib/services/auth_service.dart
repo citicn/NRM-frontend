@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'crypto_service.dart';
 class AuthSrv {
   static const String bUrl = 'http://10.0.2.2:5000';
 
@@ -18,10 +18,13 @@ class AuthSrv {
       final data = jsonDecode(response.body);
 
       final prefs = await SharedPreferences.getInstance();
+
       prefs.setString('token', data['access_token']);
       prefs.setString('user_id', data['user']['id']);
-
       prefs.setString('username', data['user']['username']);
+
+
+      await CryptoService.ensKeypairAndRegister();
 
       return data;
 
@@ -49,5 +52,7 @@ class AuthSrv {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('token');
     await prefs.remove('user_id');
+    await prefs.remove('username');
+    await prefs.remove('pub_registered');
   }
 }

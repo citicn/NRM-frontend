@@ -1,8 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../services/messages_service.dart';
 import '../services/user_service.dart';
 import '../services/conversation_service.dart';
+import '../services/crypto_service.dart';
 import 'mng_members_page.dart';
 
 class ChatPage extends StatefulWidget {
@@ -32,6 +34,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
+    _ensureKc();
     _messagesFuture = MessageService.getMsgs(widget.conversationId);
     UserService.getCurrentId().then((id) {
       setState(() {
@@ -39,6 +42,18 @@ class _ChatPageState extends State<ChatPage> {
       });
     });
     _loadMembers();
+  }
+
+  Future<void> _ensureKc() async {
+    try {
+      await CryptoService.ensKeypairAndRegister();
+      await CryptoService.ensKcForConv(widget.conversationId);
+
+    } catch (e) {
+      if (kDebugMode) {
+        print('Greska pri osiguranju Kc: $e');
+      }
+    }
   }
 
   Future<void> _loadMembers() async {
